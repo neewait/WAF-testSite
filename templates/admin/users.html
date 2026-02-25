@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% block title %}Пользователи — SecureTest{% endblock %}
+
+{% block page_title %}👥 Пользователи{% endblock %}
+
+{% block content %}
+<div class="content-section">
+    <div class="table-header">
+        <h3>Список пользователей</h3>
+        <a href="{{ url_for('admin_user_add') }}" class="btn btn-primary">+ Добавить</a>
+    </div>
+    
+    <table class="table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Имя</th>
+                <th>Email</th>
+                <th>Роль</th>
+                <th>Статус</th>
+                <th>Создан</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for user in users %}
+            <tr>
+                <td>{{ user.id }}</td>
+                <td>{{ user.username }}</td>
+                <td>{{ user.email }}</td>
+                <td>
+                    <span class="badge badge-{{ user.role }}">
+                        {{ user.role }}
+                    </span>
+                </td>
+                <td>
+                    <span class="badge badge-{{ 'success' if user.is_active else 'danger' }}">
+                        {{ 'Активен' if user.is_active else 'Заблокирован' }}
+                    </span>
+                </td>
+                <td>{{ user.created_at.strftime('%Y-%m-%d') }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}
