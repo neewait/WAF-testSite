@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+
+{% block title %}Логи событий — SecureTest{% endblock %}
+
+{% block page_title %}📋 Логи событий{% endblock %}
+
+{% block content %}
+<div class="content-section">
+    <form method="GET" action="{{ url_for('admin_logs') }}" class="filter-form">
+        <div class="form-row">
+            <input type="text" name="filter" value="{{ filter }}" placeholder="Фильтр по действию..." class="form-control">
+            <button type="submit" class="btn btn-primary">🔍 Фильтровать</button>
+            <a href="{{ url_for('admin_logs') }}" class="btn btn-secondary">Сбросить</a>
+        </div>
+    </form>
+    
+    <div class="table-responsive">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Время</th>
+                    <th>Действие</th>
+                    <th>Ресурс</th>
+                    <th>IP</th>
+                    <th>Статус</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for log in logs.items %}
+                <tr>
+                    <td>{{ log.id }}</td>
+                    <td>{{ log.created_at.strftime('%Y-%m-%d %H:%M:%S') }}</td>
+                    <td>{{ log.action }}</td>
+                    <td>{{ log.resource or '-' }}</td>
+                    <td>{{ log.ip_address or '-' }}</td>
+                    <td>
+                        <span class="badge badge-{{ log.status }}">
+                            {{ log.status }}
+                        </span>
+                    </td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="6" class="text-center">Нет записей</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    
+    <!-- Пагинация -->
+    {% if logs.pages > 1 %}
+    <nav class="pagination">
+        {% for page in logs.iter_pages() %}
+            {% if page %}
+                <a href="?page={{ page }}&filter={{ filter }}" class="btn btn-sm {{ 'btn-primary' if page == logs.page else 'btn-secondary' }}">
+                    {{ page }}
+                </a>
+            {% else %}
+                <span class="ellipsis">...</span>
+            {% endif %}
+        {% endfor %}
+    </nav>
+    {% endif %}
+</div>
+
+<div class="content-section" style="margin-top: 2rem;">
+    <h3>🔍 Тест SQL Injection</h3>
+    <p>Введите в поле фильтра:</p>
+    <ul>
+        <li><code>' OR '1'='1</code></li>
+        <li><code>1 UNION SELECT null--</code></li>
+        <li><code>admin'--</code></li>
+    </ul>
+    <p><strong>Ожидаемый результат:</strong> 403 Forbidden (WAF блокирует)</p>
+</div>
+{% endblock %}
