@@ -2,10 +2,12 @@
 
 {% block title %}Панель — SecureTest{% endblock %}
 
+{% block page_title %}Панель управления{% endblock %}
+
 {% block content %}
 <div class="dashboard-welcome">
     <h2>Добро пожаловать, {{ current_user.username }}! 👋</h2>
-    <p class="subtitle">Выберите раздел в меню слева для начала работы</p>
+    <p class="subtitle">Роль: <span class="badge badge-{{ current_user.role }}">{{ current_user.role }}</span></p>
 </div>
 
 <div class="stats-grid">
@@ -32,43 +34,126 @@
     </div>
 </div>
 
-<div class="content-section">
-    <h3>Последние события</h3>
-    <div class="event-list">
-        <div class="event-item">
-            <span class="event-time">10:32</span>
-            <span class="event-desc">Система обновлена до версии 2.4.1</span>
-            <span class="event-badge success">OK</span>
-        </div>
-        <div class="event-item">
-            <span class="event-time">09:15</span>
-            <span class="event-desc">Новый пользователь добавлен в систему</span>
-            <span class="event-badge info">Info</span>
-        </div>
-        <div class="event-item">
-            <span class="event-time">Вчера</span>
-            <span class="event-desc">Резервное копирование завершено</span>
-            <span class="event-badge success">OK</span>
+<!-- Вкладка: Отчёты -->
+<div id="reports" class="tab-pane">
+    <div class="content-section">
+        <h3>📊 Отчёты</h3>
+        <p>Статистика и отчёты системы безопасности.</p>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Дата</th>
+                    <th>Тип</th>
+                    <th>Статус</th>
+                    <th>Детали</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>2026-02-25</td>
+                    <td>Аудит безопасности</td>
+                    <td><span class="badge badge-success">Завершено</span></td>
+                    <td>12 уязвимостей найдено</td>
+                </tr>
+                <tr>
+                    <td>2026-02-24</td>
+                    <td>Сканирование портов</td>
+                    <td><span class="badge badge-success">Завершено</span></td>
+                    <td>8080, 5000 открыты</td>
+                </tr>
+                <tr>
+                    <td>2026-02-23</td>
+                    <td>Анализ логов</td>
+                    <td><span class="badge badge-warning">В процессе</span></td>
+                    <td>Обработка...</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Вкладка: Аналитика -->
+<div id="analytics" class="tab-pane">
+    <div class="content-section">
+        <h3>📈 Аналитика</h3>
+        <p>Метрики производительности и безопасности.</p>
+        <div class="stats-grid">
+            <div class="stat-card">
+                <span class="stat-icon">🛡️</span>
+                <div class="stat-info">
+                    <span class="stat-value">1,247</span>
+                    <span class="stat-label">Атак заблокировано</span>
+                </div>
+            </div>
+            <div class="stat-card">
+                <span class="stat-icon">🌐</span>
+                <div class="stat-info">
+                    <span class="stat-value">8,542</span>
+                    <span class="stat-label">Запросов обработано</span>
+                </div>
+            </div>
+            <div class="stat-card">
+                <span class="stat-icon">⚡</span>
+                <div class="stat-info">
+                    <span class="stat-value">45ms</span>
+                    <span class="stat-label">Среднее время ответа</span>
+                </div>
+            </div>
         </div>
     </div>
 </div>
 
-<!-- Секции для разных вкладок (показываются через JS) -->
-<div id="tab-content" class="tab-content">
-    <!-- Контент подгружается динамически -->
+<!-- Вкладка: Задачи -->
+<div id="tasks" class="tab-pane">
+    <div class="content-section">
+        <h3>✅ Задачи</h3>
+        <p>Список активных задач и дедлайнов.</p>
+        <div class="event-list">
+            <div class="event-item">
+                <span class="event-time">Сегодня</span>
+                <span class="event-desc">Проверить логи WAF</span>
+                <span class="event-badge warning">В ожидании</span>
+            </div>
+            <div class="event-item">
+                <span class="event-time">Завтра</span>
+                <span class="event-desc">Обновить правила CRS</span>
+                <span class="event-badge info">Запланировано</span>
+            </div>
+            <div class="event-item">
+                <span class="event-time">28.02.2026</span>
+                <span class="event-desc">Аудит безопасности</span>
+                <span class="event-badge info">Запланировано</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Вкладка: Конфиденциально (для админов) -->
+<div id="sensitive" class="tab-pane">
+    <div class="content-section">
+        <h3>🔒 Конфиденциальные данные</h3>
+        <p>Доступ к чувствительным данным системы.</p>
+        <p><a href="{{ url_for('sensitive_data') }}" class="btn btn-primary">Перейти к данным →</a></p>
+    </div>
 </div>
 {% endblock %}
 
 {% block extra_js %}
 <script>
-    // Простая навигация по вкладкам
-    document.querySelectorAll('.nav-item').forEach(link => {
-        link.addEventListener('click', (e) => {
-            e.preventDefault();
-            const tab = link.dataset.tab;
-            document.getElementById('tab-content').innerHTML = 
-                `<div class="tab-placeholder">🚧 Раздел "${tab}" в разработке</div>`;
+// Показывать нужную вкладку по hash в URL
+document.addEventListener('DOMContentLoaded', () => {
+    const hash = window.location.hash;
+    if (hash) {
+        // Скрыть все вкладки
+        document.querySelectorAll('.tab-pane').forEach(pane => {
+            pane.style.display = 'none';
         });
-    });
+        // Показать нужную
+        const target = document.querySelector(hash);
+        if (target) {
+            target.style.display = 'block';
+        }
+    }
+});
 </script>
 {% endblock %}
