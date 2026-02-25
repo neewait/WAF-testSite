@@ -1,0 +1,33 @@
+version: '3.8'
+
+services:
+  securetest-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: securetest-app
+    restart: unless-stopped
+    expose:
+      - "5000"
+    environment:
+      - FLASK_ENV=production
+      - SECRET_KEY=change-me-in-prod-super-secret-key-123
+    volumes:
+      - ./logs:/opt/app/logs
+      - ./data:/opt/app/data
+    networks:
+      - securetest-net
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5000/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+networks:
+  securetest-net:
+    external: true
+    name: securetest-net
+
+volumes:
+  app-tmp:
