@@ -1,0 +1,47 @@
+# This docker-compose file starts owasp/modsecurity-crs
+x-defaults: &default-settings
+  environment:
+    SERVERNAME: localhost
+    PARANOIA: 1
+    BLOCKING_PARANOIA: 1
+    ANOMALY_INBOUND: 5
+    ANOMALY_OUTBOUND: 4
+    REPORTING_LEVEL: 2
+
+  volumes:
+    - ./REQUEST-900-EXCLUSION-RULES-BEFORE-CRS.conf:/etc/modsecurity.d/owasp-crs/rules/REQUEST-900-EXCLUSION-RULES-BEFORE-CRS.conf
+    - ./RESPONSE-999-EXCLUSION-RULES-AFTER-CRS.conf:/etc/modsecurity.d/owasp-crs/rules/RESPONSE-999-EXCLUSION-RULES-AFTER-CRS.conf
+
+services:
+  crs-nginx:
+    image: owasp/modsecurity-crs:nginx
+    container_name: modsecurity-waf
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+    
+    <<: *default-settings
+    
+    environment:
+      - BACKEND=http://securetest-app:5000
+      - MODSEC_RULE_ENGINE=On
+      - MODSEC_AUDIT_ENGINE=RelevantOnly
+      - MODSEC_AUDIT_LOG=/var/log/modsec_audit.log
+    
+    volumes:
+      - ./logs/modsec_audit.log:/var/log/modsec_audit.log
+      - ./logs/access.log:/var/log/nginx/access.log
+      - ./logs/error.log:/var/log/nginx/error.log
+    
+    networks:
+      - securetest-net
+
+networks:
+  securetest-net:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: <IP-докер-контейнера>
+          gateway: 
+    name: securetest-net
