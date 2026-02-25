@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+
+{% block title %}Права доступа — SecureTest{% endblock %}
+
+{% block page_title %}🔐 Права доступа{% endblock %}
+
+{% block content %}
+<div class="content-section">
+    <form method="POST" action="{{ url_for('admin_permissions') }}">
+        <div class="form-group">
+            <label for="user_id">Пользователь</label>
+            <select id="user_id" name="user_id" class="form-control" required>
+                {% for op in operators %}
+                <option value="{{ op.id }}">{{ op.username }} ({{ op.email }})</option>
+                {% endfor %}
+            </select>
+        </div>
+        
+        <div class="form-group">
+            <label for="tab_name">Вкладка</label>
+            <select id="tab_name" name="tab_name" class="form-control" required>
+                {% for tab in tabs %}
+                <option value="{{ tab }}">{{ tab }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        
+        <div class="form-group checkbox">
+            <label>
+                <input type="checkbox" name="view" checked> Просмотр
+            </label>
+        </div>
+        
+        <div class="form-group checkbox">
+            <label>
+                <input type="checkbox" name="edit"> Редактирование
+            </label>
+        </div>
+        
+        <div class="form-group">
+            <button type="submit" class="btn btn-primary">Выдать права</button>
+        </div>
+    </form>
+</div>
+{% endblock %}
