@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+
+{% block title %}Конфиденциально — SecureTest{% endblock %}
+
+{% block page_title %}🔒 Конфиденциальные данные{% endblock %}
+
+{% block content %}
+<div class="content-section">
+    <div class="data-card">
+        <h3>Данные #{{ data.id }}</h3>
+        <table class="table">
+            <tr>
+                <th>Тип:</th>
+                <td>{{ data.data_type }}</td>
+            </tr>
+            <tr>
+                <th>Уровень доступа:</th>
+                <td>
+                    <span class="badge badge-{{ data.access_level }}">
+                        {{ data.access_level }}
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <th>Зашифрованное значение:</th>
+                <td><code>{{ data.encrypted_value }}</code></td>
+            </tr>
+            <tr>
+                <th>Владелец:</th>
+                <td>ID {{ data.owner_id }}</td>
+            </tr>
+        </table>
+    </div>
+    
+    <div style="margin-top: 1rem;">
+        <a href="?id={{ data.id + 1 }}" class="btn btn-secondary">Следующий →</a>
+        <a href="?id={{ data.id - 1 }}" class="btn btn-secondary" {% if data.id <= 1 %}style="pointer-events:none;opacity:0.5"{% endif %}>← Предыдущий</a>
+    </div>
+</div>
+
+<div class="content-section" style="margin-top: 2rem;">
+    <h3>🔍 Тест IDOR</h3>
+    <p>Измените параметр <code>id</code> в URL для доступа к чужим данным:</p>
+    <ul>
+        <li><code>/sensitive?id=1</code> — данные админа</li>
+        <li><code>/sensitive?id=2</code> — данные оператора</li>
+        <li><code>/sensitive?id=999</code> — несуществующие данные</li>
+    </ul>
+    <p><strong>Ожидаемый результат:</strong> WAF не блокирует (это логическая уязвимость)</p>
+</div>
+{% endblock %}
