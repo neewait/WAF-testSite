@@ -18,5 +18,5 @@ app    waf
 4. Собираем сеть докеров. Сначала запускаем контейнер с WAF, затем с сайтом.
 5. После этого заходим в браузере по локальной ссылке вашего устройства и можем тестировать сайт с WAF.
 
-UPD:
-docker-compose.yaml для WAF, docker-compose.yml для сайта.
+**UPD:**
+`docker-compose.yaml` для WAF, `docker-compose.yml` для сайта.
