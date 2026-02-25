@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+
+{% block title %}Настройки — SecureTest{% endblock %}
+
+{% block page_title %}⚙️ Настройки сайта{% endblock %}
+
+{% block content %}
+<div class="content-section">
+    <form method="POST" action="{{ url_for('admin_settings') }}">
+        <div class="form-group">
+            <label for="site_name">Название компании</label>
+            <input type="text" id="site_name" name="site_name" value="SecureTest Corp" class="form-control">
+        </div>
+        
+        <div class="form-group">
+            <label for="admin_email">Email администратора</label>
+            <input type="email" id="admin_email" name="admin_email" value="admin@securetest.local" class="form-control">
+        </div>
+        
+        <div class="form-group">
+            <label for="session_timeout">Таймаут сессии (минуты)</label>
+            <input type="number" id="session_timeout" name="session_timeout" value="120" class="form-control">
+        </div>
+        
+        <div class="form-group checkbox">
+            <label>
+                <input type="checkbox" name="maintenance"> Режим обслуживания
+            </label>
+        </div>
+        
+        <div class="form-group">
+            <button type="submit" class="btn btn-primary">Сохранить настройки</button>
+        </div>
+    </form>
+</div>
+
+<div class="content-section" style="margin-top: 2rem;">
+    <h3>🔍 Тестовые поля для WAF</h3>
+    <p>Вводите payloads для тестирования:</p>
+    <ul>
+        <li><code>&lt;script&gt;alert(1)&lt;/script&gt;</code> — XSS</li>
+        <li><code>' OR '1'='1</code> — SQL Injection</li>
+        <li><code>../../../etc/passwd</code> — Path Traversal</li>
+    </ul>
+</div>
+{% endblock %}
