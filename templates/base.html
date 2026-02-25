@@ -25,6 +25,7 @@
             <nav class="sidebar-nav">
                 {% for tab in tabs %}
                     {% if tab.is_group %}
+                        <!-- Группа меню (Администрирование) -->
                         <div class="nav-group">
                             <button class="nav-group-toggle" data-group="{{ tab.name }}">
                                 <span class="nav-icon">{{ tab.icon }}</span>
@@ -32,8 +33,18 @@
                             </button>
                             <div class="nav-group-children" id="group-{{ tab.name }}">
                                 {% for child in tab.children %}
-                                    <a href="{{ url_for('dashboard') }}#{{ child.name }}" 
-                                       class="nav-item" data-tab="{{ child.name }}">
+                                    <!-- Прямые ссылки на реальные маршруты для админки -->
+                                    {% if child.name == 'settings' %}
+                                        <a href="{{ url_for('admin_settings') }}" class="nav-item" data-tab="settings">
+                                    {% elif child.name == 'audit-logs' %}
+                                        <a href="{{ url_for('admin_logs') }}" class="nav-item" data-tab="audit-logs">
+                                    {% elif child.name == 'user-management' %}
+                                        <a href="{{ url_for('admin_users') }}" class="nav-item" data-tab="user-management">
+                                    {% elif child.name == 'permissions' %}
+                                        <a href="{{ url_for('admin_permissions') }}" class="nav-item" data-tab="permissions">
+                                    {% else %}
+                                        <a href="{{ url_for('dashboard') }}#{{ child.name }}" class="nav-item" data-tab="{{ child.name }}">
+                                    {% endif %}
                                         <span class="nav-icon">{{ child.icon }}</span>
                                         <span class="nav-label">{{ child.label }}</span>
                                     </a>
@@ -41,8 +52,16 @@
                             </div>
                         </div>
                     {% else %}
-                        <a href="{{ url_for('dashboard') }}#{{ tab.name }}" 
-                           class="nav-item" data-tab="{{ tab.name }}">
+                        <!-- Обычные вкладки -->
+                        {% if tab.name == 'home' %}
+                            <a href="{{ url_for('dashboard') }}" class="nav-item active" data-tab="home">
+                        {% elif tab.name == 'sensitive' %}
+                            <a href="{{ url_for('sensitive_data') }}" class="nav-item" data-tab="sensitive">
+                        {% elif tab.name == 'search' %}
+                            <a href="{{ url_for('search') }}" class="nav-item" data-tab="search">
+                        {% else %}
+                            <a href="{{ url_for('dashboard') }}#{{ tab.name }}" class="nav-item" data-tab="{{ tab.name }}">
+                        {% endif %}
                             <span class="nav-icon">{{ tab.icon }}</span>
                             <span class="nav-label">{{ tab.label }}</span>
                         </a>
