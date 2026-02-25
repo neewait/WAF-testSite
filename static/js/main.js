@@ -5,13 +5,11 @@ const sidebarToggle = document.getElementById('sidebarToggle');
 if (sidebarToggle) {
     sidebarToggle.addEventListener('click', () => {
         sidebar.classList.toggle('collapsed');
-        // Меняем иконку стрелки
         const icon = sidebarToggle.querySelector('span');
         icon.textContent = sidebar.classList.contains('collapsed') ? '▶' : '◀';
         localStorage.setItem('sidebarCollapsed', sidebar.classList.contains('collapsed'));
     });
     
-    // Восстанавливаем состояние сайдбара
     if (localStorage.getItem('sidebarCollapsed') === 'true') {
         sidebar.classList.add('collapsed');
         sidebarToggle.querySelector('span').textContent = '▶';
@@ -27,7 +25,6 @@ function setTheme(theme) {
     localStorage.setItem('theme', theme);
 }
 
-// Загружаем сохранённую тему
 const savedTheme = localStorage.getItem('theme') || 'light';
 setTheme(savedTheme);
 
@@ -38,7 +35,7 @@ if (themeToggle) {
     });
 }
 
-// ===== Группы в сайдбаре =====
+// ===== Группы в сайдбаре (раскрытие подменю) =====
 document.querySelectorAll('.nav-group-toggle').forEach(toggle => {
     toggle.addEventListener('click', () => {
         const group = toggle.dataset.group;
@@ -49,10 +46,27 @@ document.querySelectorAll('.nav-group-toggle').forEach(toggle => {
     });
 });
 
-// ===== Активная вкладка =====
-document.querySelectorAll('.nav-item').forEach(item => {
-    item.addEventListener('click', function() {
-        document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
-        this.classList.add('active');
+// ===== Подсветка активной вкладки при загрузке страницы =====
+document.addEventListener('DOMContentLoaded', () => {
+    const currentPath = window.location.pathname;
+    const currentHash = window.location.hash;
+    
+    document.querySelectorAll('.nav-item').forEach(item => {
+        const href = item.getAttribute('href');
+        if (href) {
+            const linkPath = href.split('#')[0];
+            if (linkPath === currentPath) {
+                document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+                item.classList.add('active');
+            }
+        }
     });
+    
+    // Для hash-вкладок внутри dashboard
+    if (currentHash) {
+        const target = document.querySelector(currentHash);
+        if (target) {
+            target.scrollIntoView({ behavior: 'smooth' });
+        }
+    }
 });
