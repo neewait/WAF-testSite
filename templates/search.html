@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+
+{% block title %}Поиск — SecureTest{% endblock %}
+
+{% block page_title %}🔍 Поиск{% endblock %}
+
+{% block content %}
+<div class="content-section">
+    <form method="GET" action="{{ url_for('search') }}" class="search-form">
+        <div class="form-row">
+            <input type="text" name="q" value="{{ query }}" placeholder="Поиск..." class="form-control" autofocus>
+            <button type="submit" class="btn btn-primary">🔍 Найти</button>
+        </div>
+    </form>
+    
+    {% if query %}
+    <div class="search-info">
+        <p>Результаты для: <strong>{{ query }}</strong></p>
+    </div>
+    
+    {% if results %}
+    <div class="search-results">
+        {% for result in results %}
+        <div class="result-item">
+            <h4>{{ result.title }}</h4>
+            <p>{{ result.description }}</p>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="no-results">
+        <p>Ничего не найдено</p>
+    </div>
+    {% endif %}
+    {% endif %}
+</div>
+
+<div class="content-section" style="margin-top: 2rem;">
+    <h3>🔍 Тест XSS</h3>
+    <p>Введите в поле поиска:</p>
+    <ul>
+        <li><code>&lt;script&gt;alert(1)&lt;/script&gt;</code></li>
+        <li><code>&lt;img src=x onerror=alert(1)&gt;</code></li>
+        <li><code>javascript:alert(1)</code></li>
+    </ul>
+    <p><strong>Ожидаемый результат:</strong> 403 Forbidden (WAF блокирует)</p>
+</div>
+{% endblock %}
