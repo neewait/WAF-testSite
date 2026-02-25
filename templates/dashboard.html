@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+
+{% block title %}Панель — SecureTest{% endblock %}
+
+{% block content %}
+<div class="dashboard-welcome">
+    <h2>Добро пожаловать, {{ current_user.username }}! 👋</h2>
+    <p class="subtitle">Выберите раздел в меню слева для начала работы</p>
+</div>
+
+<div class="stats-grid">
+    <div class="stat-card">
+        <span class="stat-icon">📊</span>
+        <div class="stat-info">
+            <span class="stat-value">24</span>
+            <span class="stat-label">Отчётов за неделю</span>
+        </div>
+    </div>
+    <div class="stat-card">
+        <span class="stat-icon">✅</span>
+        <div class="stat-info">
+            <span class="stat-value">12</span>
+            <span class="stat-label">Активных задач</span>
+        </div>
+    </div>
+    <div class="stat-card">
+        <span class="stat-icon">🔔</span>
+        <div class="stat-info">
+            <span class="stat-value">3</span>
+            <span class="stat-label">Новых уведомления</span>
+        </div>
+    </div>
+</div>
+
+<div class="content-section">
+    <h3>Последние события</h3>
+    <div class="event-list">
+        <div class="event-item">
+            <span class="event-time">10:32</span>
+            <span class="event-desc">Система обновлена до версии 2.4.1</span>
+            <span class="event-badge success">OK</span>
+        </div>
+        <div class="event-item">
+            <span class="event-time">09:15</span>
+            <span class="event-desc">Новый пользователь добавлен в систему</span>
+            <span class="event-badge info">Info</span>
+        </div>
+        <div class="event-item">
+            <span class="event-time">Вчера</span>
+            <span class="event-desc">Резервное копирование завершено</span>
+            <span class="event-badge success">OK</span>
+        </div>
+    </div>
+</div>
+
+<!-- Секции для разных вкладок (показываются через JS) -->
+<div id="tab-content" class="tab-content">
+    <!-- Контент подгружается динамически -->
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Простая навигация по вкладкам
+    document.querySelectorAll('.nav-item').forEach(link => {
+        link.addEventListener('click', (e) => {
+            e.preventDefault();
+            const tab = link.dataset.tab;
+            document.getElementById('tab-content').innerHTML = 
+                `<div class="tab-placeholder">🚧 Раздел "${tab}" в разработке</div>`;
+        });
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="ru" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Вход — SecureTest</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <style>
+        body { display: flex; align-items: center; justify-content: center; min-height: 100vh; }
+        .login-card { 
+            background: var(--card-bg); 
+            padding: 2rem; 
+            border-radius: 12px; 
+            box-shadow: var(--shadow);
+            width: 100%; max-width: 400px;
+            animation: slideUp 0.4s ease;
+        }
+        .login-logo { text-align: center; margin-bottom: 1.5rem; font-size: 1.5rem; }
+        .form-group { margin-bottom: 1rem; }
+        .form-group label { display: block; margin-bottom: 0.5rem; color: var(--text); }
+        .form-group input { 
+            width: 100%; padding: 0.75rem; 
+            border: 1px solid var(--border); 
+            border-radius: 6px; 
+            background: var(--input-bg);
+            color: var(--text);
+            transition: border-color 0.2s;
+        }
+        .form-group input:focus { outline: none; border-color: var(--primary); }
+        .btn { 
+            width: 100%; padding: 0.75rem; 
+            background: var(--primary); color: white; 
+            border: none; border-radius: 6px; 
+            cursor: pointer; font-weight: 500;
+            transition: transform 0.1s, background 0.2s;
+        }
+        .btn:hover { background: var(--primary-dark); }
+        .btn:active { transform: scale(0.98); }
+        .alert { padding: 0.75rem; border-radius: 6px; margin-bottom: 1rem; }
+        .alert-error { background: #fee; color: #900; border: 1px solid #fcc; }
+    </style>
+</head>
+<body>
+    <div class="login-card">
+        <div class="login-logo">🛡️ SecureTest Corp</div>
+        
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+        
+        <form method="POST" action="{{ url_for('login') }}">
+            <div class="form-group">
+                <label for="username">Имя пользователя</label>
+                <input type="text" id="username" name="username" required autocomplete="username">
+            </div>
+            <div class="form-group">
+                <label for="password">Пароль</label>
+                <input type="password" id="password" name="password" required autocomplete="current-password">
+            </div>
+            <button type="submit" class="btn">Войти</button>
+        </form>
+        
+        <div style="margin-top: 1rem; font-size: 0.85rem; color: var(--muted); text-align: center;">
+            <p>Тестовые учётки:</p>
+            <p><code>admin / Admin@123!</code></p>
+            <p><code>operator1 / Op1pass!</code></p>
+        </div>
+    </div>
+    
+    <script>
+        // Авто-переключение темы при загрузке
+        const savedTheme = localStorage.getItem('theme') || 'light';
+        document.documentElement.setAttribute('data-theme', savedTheme);
+    </script>
+</body>
+</html>
