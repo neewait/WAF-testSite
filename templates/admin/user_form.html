@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+
+{% block title %}Добавить пользователя — SecureTest{% endblock %}
+
+{% block page_title %}👥 Добавить пользователя{% endblock %}
+
+{% block content %}
+<div class="content-section">
+    <form method="POST" action="{{ url_for('admin_user_add') }}">
+        <div class="form-group">
+            <label for="username">Имя пользователя *</label>
+            <input type="text" id="username" name="username" required class="form-control">
+        </div>
+        
+        <div class="form-group">
+            <label for="email">Email *</label>
+            <input type="email" id="email" name="email" required class="form-control">
+        </div>
+        
+        <div class="form-group">
+            <label for="password">Пароль *</label>
+            <input type="password" id="password" name="password" required class="form-control">
+        </div>
+        
+        <div class="form-group">
+            <label for="role">Роль</label>
+            <select id="role" name="role" class="form-control">
+                <option value="operator">Оператор</option>
+                <option value="admin">Администратор</option>
+            </select>
+        </div>
+        
+        <div class="form-group">
+            <button type="submit" class="btn btn-primary">Создать</button>
+            <a href="{{ url_for('admin_users') }}" class="btn btn-secondary">Отмена</a>
+        </div>
+    </form>
+</div>
+
+<div class="content-section" style="margin-top: 2rem;">
+    <h3>🔍 Тест XSS</h3>
+    <p>Введите в поле "Имя пользователя":</p>
+    <ul>
+        <li><code>&lt;script&gt;alert(1)&lt;/script&gt;</code></li>
+        <li><code>&lt;img onerror=alert(1)&gt;</code></li>
+    </ul>
+    <p><strong>Ожидаемый результат:</strong> 403 Forbidden (WAF блокирует)</p>
+</div>
+{% endblock %}
