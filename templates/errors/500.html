@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="ru" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>500 — SecureTest</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <style>
+        body { 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            min-height: 100vh; 
+            background: var(--bg);
+        }
+        .error-card { 
+            text-align: center; 
+            padding: 3rem;
+            background: var(--card-bg);
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+        }
+        .error-code { font-size: 4rem; font-weight: 700; color: var(--error); }
+        .error-message { font-size: 1.5rem; margin: 1rem 0; color: var(--text); }
+        .error-description { color: var(--text-muted); margin-bottom: 2rem; }
+        .btn { display: inline-block; padding: 0.75rem 1.5rem; background: var(--primary); color: white; text-decoration: none; border-radius: 6px; }
+    </style>
+</head>
+<body>
+    <div class="error-card">
+        <div class="error-code">500</div>
+        <div class="error-message">Внутренняя ошибка сервера</div>
+        <div class="error-description">Произошла непредвиденная ошибка. Попробуйте обновить страницу или обратитесь к администратору.</div>
+        <a href="{{ url_for('dashboard') }}" class="btn">← На главную</a>
+    </div>
+</body>
+</html>
